@@ -1,0 +1,28 @@
+{
+  "name": "generoi/wp-genero-analytics",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "description": "Some small Google Analytics additions",
+  "homepage": "https://github.com/generoi/wp-genero-analytics",
+  "authors": [
+    {
+      "name": "Oskar Schöldström",
+      "email": "public@oxy.fi"
+    }
+  ],
+  "keywords": [
+    "wordpress"
+  ],
+  "support": {
+    "issues": "https://github.com/generoi/wp-genero-analytics/issues"
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "composer/installers": "~1.0"
+  },
+  "archive" : {
+    "exclude": [
+      ".gitignore"
+    ]
+  }
+}
