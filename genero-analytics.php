@@ -27,7 +27,7 @@ class Analytics {
 
     if (is_plugin_active('gravityforms/gravityforms.php')) {
       self::$instance->add_filters();
-      self::$instance->add_actions();
+      self::$instance->add_assets();
     }
   }
 
@@ -37,12 +37,9 @@ class Analytics {
     add_filter('gform_form_tag', array($this, 'gform_tag'), 10, 2 );
   }
 
-  public function add_actions() {
-    add_action('wp_enqueue_script', array($this, 'register_scripts'));
-  }
-
-  public function register_scripts() {
+  public function add_assets() {
     wp_register_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js', array(), '0.1', false);
+    wp_enqueue_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js');
   }
 
   /**
@@ -82,7 +79,7 @@ class Analytics {
       $category = $form['analytics_category'];
       $label = !empty($form['analytics_label']) ? $form['analytics_label'] : '';
       $form_tag = str_replace("method='post'", "method='post' data-genero-analytics data-category='$category' data-label='$label'", $form_tag);
-      wp_enqueue_script('genero-analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js');
+      wp_enqueue_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js');
     }
     return $form_tag;
   }
