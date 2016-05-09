@@ -20,24 +20,22 @@ if (!defined('ABSPATH')) {
 class Analytics {
   private static $instance = null;
 
-  public static function init() {
+  public static function get_instance() {
     if ( null === self::$instance ) {
       self::$instance = new self();
     }
 
-    if (is_plugin_active('gravityforms/gravityforms.php')) {
-      self::$instance->add_filters();
-      self::$instance->add_assets();
-    }
+    return self::$instance;
   }
 
-  public function add_filters() {
+  public function init() {
+    add_action('wp_enqueue_script', array($this, 'enqueue_scripts'));
     add_filter('gform_form_settings', array($this, 'gform_settings'), 10, 2);
     add_filter('gform_pre_form_settings_save', array($this, 'gform_settings_save'), 10, 2);
     add_filter('gform_form_tag', array($this, 'gform_tag'), 10, 2 );
   }
 
-  public function add_assets() {
+  public function enqueue_scripts() {
     wp_register_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js', array(), '0.1', false);
     wp_enqueue_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js');
   }
@@ -86,4 +84,6 @@ class Analytics {
 
 }
 
-add_action('plugins_loaded', array(__NAMESPACE__ . '\\Analytics', 'init'));
+add_action('plugins_loaded', function () {
+  Analytics::get_instance()->init();
+});
