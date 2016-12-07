@@ -74,7 +74,8 @@
    */
   $(document).on('gform_confirmation_loaded', function(e, formId) {
     var id = 'gform_' + formId;
-    if (formList.hasOwnProperty(id)) {
+    if (formList.hasOwnProperty(id) && !formList[id].done) {
+      formList[id].done = true;
       var data = formList[id];
       window.Gevent(data.category, 'Confirmation', data.label);
     }
