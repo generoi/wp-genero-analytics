@@ -53,6 +53,24 @@
   };
 
   /**
+   * Track an event specified on a HTML element using data attributes.
+   * @private
+   */
+  function trackElementEvent($el) {
+    var category, action, label;
+
+    if (!(category = $el.data('category'))) {
+      return;
+    }
+    if (!(action = $el.data('action'))) {
+      return;
+    }
+    label = $el.data('label');
+
+    window.Gevent(category, action, label);
+  }
+
+  /**
    * Trigger an event when form is being submitted and store the form data for
    * later.
    */
@@ -89,21 +107,8 @@
    * @example
    *  <a href="/foo" data-category="Outbound" data-action="Click" data-label="Foo">Foo</a>
    */
-  $(document.body).bind('mousedown keyup touchstart', function(event) {
-    $(event.target).closest('a, area').each(function() {
-      var $this = $(this);
-      var category, action, label;
-
-      if (!(category = $this.data('category'))) {
-        return;
-      }
-      if (!(action = $this.data('action'))) {
-        return;
-      }
-      label = $this.data('label');
-
-      window.Gevent(category, action, label);
-    });
+  $(document).on('mousedown keyup touchstart', 'a[data-category][data-action], button[data-category][data-action]', function(event) {
+    trackElementEvent($(this));
   });
 
 }(jQuery));
