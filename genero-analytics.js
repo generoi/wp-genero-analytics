@@ -15,6 +15,7 @@
     // Yoast renames the `ga` global.
     var _ga = window.ga || window.__gaTracker;
     var script = 'no tracker available';
+    var has_gtm = typeof dataLayer !== 'undefined';
 
     // Make sure any possible callback is fired even if GA fails.
     var hasFiredCallback = false;
@@ -43,8 +44,23 @@
       }
       script = 'ga.js';
     }
-    else if (callback) {
+    // Fire the callback unless there's GTM available that can fire it.
+    else if (!has_gtm && callback) {
       fireCallback();
+    }
+
+    if (has_gtm) {
+      args = {
+        event: args[0] + '.' + args[1],
+        category: args[0],
+        action: args[1],
+        label: args[2] || ''
+      };
+      if (callback) {
+        args.eventCallback = fireCallback;
+      }
+      dataLayer.push(args);
+      script = 'gtm';
     }
 
     if (console && console.log) {
@@ -74,10 +90,10 @@
    * Trigger an event when form is being submitted and store the form data for
    * later.
    */
-  $('form').one('submit', function (e) {
+  $(document).on('submit', 'form', function (e) {
     var $form = $(this);
     var data = $form.data();
-    if (data.hasOwnProperty('generoAnalytics') && data.category) {
+    if (data.hasOwnProperty('generoAnalytics') && data.category && !formList.hasOwnProperty(this.id)) {
       e.preventDefault();
       // Store the data values as the <form> element is removed with AJAX.
       formList[this.id] = data;
