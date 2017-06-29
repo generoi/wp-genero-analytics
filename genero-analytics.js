@@ -127,4 +127,22 @@
     trackElementEvent($(this));
   });
 
+  /**
+   * WP Hubspot Form integration.
+   */
+  $(document).on('wp-hubspot:onFormSubmit', function (e, $form) {
+    var $wrapper = $form.parent();
+    window.Gevent('HubspotForm', 'Submit', $wrapper.data('hubspotName'));
+  });
+
+  /**
+   * WP Hubspot CTA integration.
+   */
+  $(document).on('mousedown keyup touchstart', '.hs-cta-wrapper .cta_button', function () {
+    var $this = $(this);
+    var $wrapper = $this.parents('.wp-hubspot--cta');
+    var label = $wrapper.length ? $wrapper.data('hubspotName') : $this.text();
+    window.Gevent('HubspotCTA', 'Click', label);
+  })
+
 }(jQuery));
