@@ -32,7 +32,8 @@ class Analytics {
     add_action('wp_footer', array($this, 'enqueue_scripts'));
     add_filter('gform_form_settings', array($this, 'gform_settings'), 10, 2);
     add_filter('gform_pre_form_settings_save', array($this, 'gform_settings_save'), 10, 2);
-    add_filter('gform_form_tag', array($this, 'gform_tag'), 10, 2 );
+    add_filter('gform_form_tag', array($this, 'gform_tag'), 10, 2);
+    add_filter('gform_confirmation', array($this, 'gform_confirmation'), 10, 4);
   }
 
   public function enqueue_scripts() {
@@ -80,6 +81,15 @@ class Analytics {
       wp_enqueue_script('genero/analytics', plugin_dir_url(__FILE__) . 'genero-analytics.js');
     }
     return $form_tag;
+  }
+
+  public function gform_confirmation($confirmation, $form, $entry, $is_ajax) {
+    if (!empty($form['analytics_category'])) {
+      $category = $form['analytics_category'];
+      $label = !empty($form['analytics_label']) ? $form['analytics_label'] : '';
+      $confirmation .= '<script>window.generoAnalyticsForm = {"category": "' . $category . '", "label": "' . $label . '", "id": "' . $form['id'] . '"};</script>';
+    }
+    return $confirmation;
   }
 
 }

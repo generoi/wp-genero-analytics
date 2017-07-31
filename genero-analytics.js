@@ -116,6 +116,20 @@
   });
 
   /**
+   * Trigger the `gform_confirmation_loaded` event for forms without AJAX.
+   */
+  $(document).on('ready', function () {
+    if (window.generoAnalyticsForm) {
+      var formId = window.generoAnalyticsForm.id;
+      var id = 'gform_' + formId;
+      if (!formList.hasOwnProperty(id)) {
+        formList[id] = window.generoAnalyticsForm;
+        $(document).trigger('gform_confirmation_loaded', formId);
+      }
+    }
+  })
+
+  /**
    * Reliably track events on external links.
    *
    * @see Google Analytics Module for Drupal
