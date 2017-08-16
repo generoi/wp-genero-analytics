@@ -84,7 +84,7 @@ class Analytics {
   }
 
   public function gform_confirmation($confirmation, $form, $entry, $is_ajax) {
-    if (!empty($form['analytics_category'])) {
+    if (is_string($confirmation) && !empty($form['analytics_category'])) {
       $category = $form['analytics_category'];
       $label = !empty($form['analytics_label']) ? $form['analytics_label'] : '';
       $confirmation .= '<script>window.generoAnalyticsForm = {"category": "' . $category . '", "label": "' . $label . '", "id": "' . $form['id'] . '"};</script>';
