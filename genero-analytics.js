@@ -159,4 +159,35 @@
     window.Gevent('HubspotCTA', 'Click', label);
   })
 
+  /**
+   * Tawk.to integration
+   */
+  if (window.Tawk_API) {
+    var is_loaded = false;
+    var tawk_events = {
+      'onChatMaximized': 'Open',
+      'onChatMinimized': 'Close',
+      'onChatHidden': 'Hide',
+      'onChatEnded': 'End',
+      'onPrechatSubmit': 'PrechatSubmit',
+      'onOfflineSubmit': 'OfflineSubmit',
+    };
+
+    $(window).on('load', function () {
+      window_loaded = new Date().getTime();
+    });
+
+    for (var event in tawk_events) if (tawk_events.hasOwnProperty(event)) {
+      (function (event) {
+        window.Tawk_API[event] = function () {
+          var current_time = new Date().getTime();
+          if (window_loaded && tawk_events[event] && (current_time > (window_loaded + 1000))) {
+            window.Gevent('Tawk.to', tawk_events[event], window.Tawk_API.visitor && window.Tawk_API.visitor.name || '');
+            tawk_events[event] = null;
+          }
+        };
+      }(event));
+    }
+  }
+
 }(jQuery));
