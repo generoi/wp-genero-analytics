@@ -3,7 +3,7 @@
 Plugin Name:        Genero Analytics
 Plugin URI:         http://genero.fi
 Description:        Some small Google Analytics additions
-Version:            1.3.2
+Version:            1.3.3
 Author:             Genero
 Author URI:         http://genero.fi/
 
@@ -12,6 +12,8 @@ License URI:        http://opensource.org/licenses/MIT
 */
 
 namespace Genero;
+
+use Puc_v4_Factory;
 
 if (!defined('ABSPATH')) {
   exit;
