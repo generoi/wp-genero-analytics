@@ -3,7 +3,7 @@
 Plugin Name:        Genero Analytics
 Plugin URI:         http://genero.fi
 Description:        Some small Google Analytics additions
-Version:            0.0.1
+Version:            1.3.2
 Author:             Genero
 Author URI:         http://genero.fi/
 
@@ -19,6 +19,8 @@ if (!defined('ABSPATH')) {
 
 class Analytics {
   private static $instance = null;
+  public $plugin_name = 'wp-genero-analytics';
+  public $github_url = 'https://github.com/generoi/wp-genero-analytics';
 
   public static function get_instance() {
     if ( null === self::$instance ) {
@@ -26,6 +28,11 @@ class Analytics {
     }
 
     return self::$instance;
+  }
+
+  public function __construct() {
+    Puc_v4_Factory::buildUpdateChecker($this->github_url, __FILE__, $this->plugin_name);
+    add_action('plugins_loaded', [$this, 'init']);
   }
 
   public function init() {
@@ -94,4 +101,8 @@ class Analytics {
 
 }
 
-Analytics::get_instance()->init();
+if (file_exists($composer = __DIR__ . '/vendor/autoload.php')) {
+    require_once $composer;
+}
+
+Analytics::get_instance();
