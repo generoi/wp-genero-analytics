@@ -193,4 +193,81 @@
   $(document).on('ready', addTawkToIntegration);
   $(window).on('load', addTawkToIntegration);
 
+  /**
+   * Social networks
+   */
+  function trackSocialInteraction(network, action, target) {
+    // Yoast has it's own tracker anyways.
+    if (window.ga) {
+      ga('send', {
+        hitType: 'social',
+        socialNetwork: network,
+        socialAction: action,
+        socialTarget: target,
+      })
+    }
+    if (typeof dataLayer !== 'undefined') {
+      dataLayer.push({
+        event: 'socialInteraction',
+        socialNetwork: network,
+        socialAction: action,
+        socialTarget: target,
+      });
+    }
+
+    if (console && console.log) {
+      console.log('track social interaction', arguments);
+    }
+  }
+
+  function addFacebookListeners() {
+    window.FB.Event.subscribe('edge.create', function (targetUrl) {
+      trackSocialInteraction('Facebook', 'like', targetUrl);
+    });
+    window.FB.Event.subscribe('edge.remove', function (targetUrl) {
+      trackSocialInteraction('Facebook', 'unlike', targetUrl);
+    });
+    window.FB.Event.subscribe('message.send', function (targetUrl) {
+      trackSocialInteraction('Facebook', 'send', targetUrl);
+    });
+  }
+
+  function addTwitterListeners() {
+    window.twttr.ready(function (twttr) {
+      window.twttr.events.bind('tweet', function () {
+        trackSocialInteraction('Twitter', 'tweet', window.location.href);
+      });
+      window.twttr.events.bind('retweet', function () {
+        trackSocialInteraction('Twitter', 'retweet', window.location.href);
+      });
+      window.twttr.events.bind('favorite', function () {
+        trackSocialInteraction('Twitter', 'favorite', window.location.href);
+      });
+      window.twttr.events.bind('follow', function () {
+        trackSocialInteraction('Twitter', 'follow', window.location.href);
+      });
+    });
+  }
+
+  $(window).on('load', function () {
+    var hasFacebookIntegration = hasTwitterIntegration = false;
+    var delay = 1000;
+    var counter = 0;
+
+    var loop = setInterval(function () {
+      if (!hasFacebookIntegration && window.FB && window.FB.Event && window.FB.Event.subscribe) {
+        hasFacebookIntegration = true;
+        addFacebookListeners();
+      }
+      if (!hasTwitterIntegration && window.twttr && window.twttr.ready) {
+        hasTwitterIntegration = true;
+        addTwitterListeners();
+      }
+
+      if (hasFacebookIntegration && hasTwitterIntegration || (++counter > 10)) {
+        clearInterval(loop);
+      }
+    }, delay)
+  });
+
 }(jQuery));
