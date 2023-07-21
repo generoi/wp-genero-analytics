@@ -17,8 +17,7 @@
     "issues": "https://github.com/generoi/wp-genero-analytics/issues"
   },
   "require": {
-    "php": ">=5.4.0",
-    "yahnis-elsts/plugin-update-checker": "^4.4"
+    "php": ">=5.4.0"
   },
   "archive" : {
     "exclude": [

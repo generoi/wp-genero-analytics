@@ -13,8 +13,6 @@ License URI:        http://opensource.org/licenses/MIT
 
 namespace Genero;
 
-use Puc_v4_Factory;
-
 if (!defined('ABSPATH')) {
   exit;
 }
@@ -22,7 +20,6 @@ if (!defined('ABSPATH')) {
 class Analytics {
   private static $instance = null;
   public $plugin_name = 'wp-genero-analytics';
-  public $github_url = 'https://github.com/generoi/wp-genero-analytics';
 
   public static function get_instance() {
     if ( null === self::$instance ) {
@@ -33,7 +30,6 @@ class Analytics {
   }
 
   public function __construct() {
-    Puc_v4_Factory::buildUpdateChecker($this->github_url, __FILE__, $this->plugin_name);
     add_action('plugins_loaded', [$this, 'init']);
   }
 
@@ -101,10 +97,6 @@ class Analytics {
     return $confirmation;
   }
 
-}
-
-if (file_exists($composer = __DIR__ . '/vendor/autoload.php')) {
-    require_once $composer;
 }
 
 Analytics::get_instance();
